@@ -26,7 +26,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/zzs/lock/DeadLockDemo.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="308">
-              <caret line="14" column="61" lean-forward="true" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
+              <caret line="14" column="61" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -87,7 +87,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555574841809" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555575439594" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../dubbo" />
   </component>
   <component name="RunDashboard">
@@ -162,7 +162,7 @@
       <updated>1555426391994</updated>
       <workItem from="1555426395386" duration="5100000" />
       <workItem from="1555488121294" duration="5884000" />
-      <workItem from="1555574185578" duration="643000" />
+      <workItem from="1555574185578" duration="1135000" />
     </task>
     <task id="LOCAL-00001" summary="使用condition唤醒指定线程：condition.signal()唤醒所有使用condition.await()的线程">
       <created>1555428462348</created>
@@ -189,7 +189,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11627000" />
+    <option name="totallyTimeSpent" value="12119000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -441,7 +441,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/zzs/lock/DeadLockDemo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
-          <caret line="14" column="61" lean-forward="true" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
+          <caret line="14" column="61" selection-start-line="14" selection-start-column="61" selection-end-line="14" selection-end-column="61" />
         </state>
       </provider>
     </entry>
