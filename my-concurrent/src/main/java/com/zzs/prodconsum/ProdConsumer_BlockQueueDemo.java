@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ProdConsumer_BlockQueueDemo {
     public static void main(String[] args) {
-        MyResource myResource = new MyResource(new ArrayBlockingQueue<>(10));
+        MyResourceS myResource = new MyResourceS(new ArrayBlockingQueue<>(10));
         new Thread(() -> {
             System.out.println(Thread.currentThread().getName() + "\t生产线程启动");
             try {
@@ -46,7 +46,7 @@ public class ProdConsumer_BlockQueueDemo {
     }
 }
 
-class MyResource {
+class MyResourceS {
     private volatile boolean FLAG = true;//默认开启 进行生产
     private AtomicInteger atomicInteger = new AtomicInteger();
     private BlockingQueue<String> blockingQueue = null;
@@ -90,11 +90,11 @@ class MyResource {
         this.FLAG = false;
     }
 
-    public MyResource(BlockingQueue<String> blockingQueue) {
+    public MyResourceS(BlockingQueue<String> blockingQueue) {
         this.blockingQueue = blockingQueue;
         System.out.println(blockingQueue.getClass().getName());
     }
 
-    public MyResource() {
+    public MyResourceS() {
     }
 }
