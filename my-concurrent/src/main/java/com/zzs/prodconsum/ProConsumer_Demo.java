@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ProConsumer_Demo {
     public static void main(String[] args) {
-        Myresource myresource = new Myresource();
+        Myresources myresource = new Myresources();
         while (true) {
             new Thread(() -> {
                 myresource.prod();
@@ -21,7 +21,7 @@ public class ProConsumer_Demo {
     }
 }
 
-class Myresource {
+class Myresources {
     private boolean flag = false;
     private int num = 0;
 
