@@ -2,7 +2,7 @@
 
 ---
 
-### 一、JVM参数类型
+### 									一、JVM参数类型
 
 - **标配参数**
 
@@ -37,7 +37,7 @@
 
      
 
-### 二、
+### 									二、
 
 
 
@@ -53,7 +53,7 @@
 
 ---
 
-### 一、List
+### 									一、List
 
 #### 1.特性
 
@@ -98,7 +98,7 @@
 
   ​		底层是双向链表结构，插入或删除只影响位置的前后元素，所以插入快，查询需要从头开始查，慢
 
-### 二、Set
+### 									二、Set
 
 #### 1.特性
 
@@ -114,7 +114,7 @@
 - **HashSet:**底层hashtable实现
 - **TreeSet：**有序
 
-### 三、Map
+### 									三、Map
 
 #### 1.特性
 
@@ -137,7 +137,7 @@
 
 ---
 
-### 一、CAS(compare and swap比较并交换)
+### 									一、CAS(compare and swap比较并交换)
 
 ##### 什么是CAS
 
@@ -159,7 +159,7 @@
 
 
 
-### 二、自旋锁
+### 									二、自旋锁
 
 ##### 	什么是自旋锁
 
@@ -172,7 +172,7 @@
 
 
 
-## 三、Java内存模型
+### 									三、Java内存模型
 
 ​	内存分为主内存和本地内存，每个线程有自己的本地内存，主内存中存放共享变量，本地内存存放共享变量的副本。本地内存更新变量副本后需要同步到主内存中。
 
@@ -184,7 +184,7 @@
 
 
 
-## 四、乐观锁和悲观锁
+### 									四、乐观锁和悲观锁
 
 ##### 	乐观锁：
 
@@ -196,7 +196,7 @@
 
 
 
-## 五、AQS（AbstractQueuedSynchronizer队列同步器）
+### 									五、AQS（AbstractQueuedSynchronizer队列同步器）
 
 ##### 	1、什么是AQS
 
@@ -216,7 +216,7 @@
 
 
 
-### 六、Executors框架
+### 									六、Executors框架
 
 Executors框架其内部采用了线程池机制，他在java.util.cocurrent包下，通过该框架来控制线程的启动、执行、关闭，可以简化并发编程的操作。因此，通过Executors来启动线程比使用Thread的start方法更好，而且更容易管理，效率更好，还有关键的一点：有助于避免this溢出。
 
@@ -226,15 +226,21 @@ Executors框架包括：线程池、Executor，Executors，ExecutorService、Com
 
 
 
-### 七、阻塞队列
+### 									七、阻塞队列
+
+
+
+##### 1、什么是阻塞队列
+
+
 
 ​	**阻塞队列**是一个支持**两个附加操作**的队列：1、在队列为空时，从队列获取元素时会等待队列变为非空。2、当队列满时，当队列存储元素时会等待队列不满。
 
-​	常用于**生产者-消费者**模式，**生产者**是往队列存储元素的线程，**消费者**是从队列中获取元素的线程。
+常用于**生产者-消费者**模式，**生产者**是往队列存储元素的线程，**消费者**是从队列中获取元素的线程。
 
-​	阻塞队列提供了四种处理方法：
 
-​	
+
+##### 2、阻塞队列提供四种处理方法：
 
 | 方法\处理方式 | 抛出异常  | 返回特殊值 | 一直阻塞 | 超时退出           |
 | ------------- | --------- | ---------- | -------- | ------------------ |
@@ -252,7 +258,131 @@ Executors框架包括：线程池、Executor，Executors，ExecutorService、Com
 
 
 
+##### 3、Java常用阻塞队列
 
+###### 	1、ArrayBlockingQueue：
+
+​			基于数组结构组成的有界阻塞队列，FIFO先进先出，可以指定队列数
+
+​			默认非公平，可重入
+
+
+
+​	**ArrayBlockingQueue在生产者放入数据和消费者获取数据，都是共用同一个锁对象，由此也意味着两者无法真正并行运行，这点尤其不同于LinkedBlockingQueue**
+
+
+
+###### 	2、LinkedBlockingQueue：
+
+​			基于链表结构组成的有界阻塞队列，FIFO先进先出，但默认值太大，可以指定队列数
+
+​	**LinkedBlockingQueue之所以能够高效的处理并发数据，因为其对于生产者端和消费者端分别采用了 <u>独立的锁</u> 来控制数据同步**
+
+
+
+###### 	3、SynchronousQueue：
+
+###### 			不存储元素阻塞队列。同步队列。		
+
+​	**吞吐量：**SynchronousQueue  >  LinkedBlockingQueue  >  ArrayBlockingQueue
+
+##### 4、阻塞队列实现原理（ArrayBlockingQueue）
+
+​	使用通知者模式实现：当生产者往满的队列里添加元素时会阻塞生产者，当消费者消费了一个队列元素后会通知生产者当前队列可用。
+
+​	ArrayBlockingQueue使用了Lock，和Condition实现：
+
+```java
+    public ArrayBlockingQueue(int capacity, boolean fair) {
+        if (capacity <= 0)
+            throw new IllegalArgumentException();
+        this.items = new Object[capacity];
+        lock = new ReentrantLock(fair);
+        notEmpty = lock.newCondition();
+        notFull =  lock.newCondition();
+    }
+```
+
+```
+
+```
+
+### 									八、Callable和Future
+
+##### 1、什么是Callable和Future
+
+​	Callable接口代表一段可以调用并返回结果的代码;Future接口表示异步任务，是还没有完成的任务给出的未来结果。所以说Callable用于产生结果，Future用于获取结果。
+
+​	Callable接口使用泛型去定义它的返回类型。Executors类提供了一些有用的方法在线程池中执行Callable内的任务。由于Callable任务是并行的（并行就是整体看上去是并行的，其实在某个时间点只有一个线程在执行），我们必须等待它返回的结果
+
+##### 2、实现Callsble
+
+```java
+    class MyCallable implements Callable<String> {
+        @Override
+        public String call() throws Exception {
+            return Thread.currentThread().getName();
+        }
+    }
+public class CallableTest{
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        MyCallable myCallable = new MyCallable();
+		//第一种实现
+        FutureTask<String> futureTask = new FutureTask<>(myCallable);
+        Thread thread = new Thread(futureTask, "AAAA");
+        thread.start();
+        System.out.println(futureTask.get());
+
+        //第二种实现
+        FutureTask<String> futureTask2 = new FutureTask<>(myCallable);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.execute(futureTask2);
+        while (true) {
+            if (futureTask2.isDone()) {
+                executorService.shutdown();
+                System.out.println(futureTask2.get());
+                break;
+            }
+        }
+
+        //第三种实现
+        ExecutorService executorService2 = Executors.newCachedThreadPool();
+
+        Future<String> future = executorService2.submit(myCallable);
+
+        executorService2.shutdown();
+        System.out.println(future.get());
+
+    }
+}
+
+```
+
+### 									九、同步容器和并发容器
+
+##### 1、同步容器
+
+​	同步容器包括两个部分，一个是vector和HashTable。同步容器都是线程安全的。
+
+​	同步容器通过对容器的所有状态进行串行访问，从而实现它们的线程安全
+
+​	这样做的代价是削弱了并发性，当多个线程共同竞争容器级的锁时，吞吐量就会降低
+
+##### 2、并发容器
+
+- CopyOnWrite容器：CopyOnWriteArrayList、CopyOnWriteArraySet
+- CocurrentMap的实现类：ConcurrentHashMap、ConcurrentSkipListMap 
+
++ 阻塞队列的实现类（共七种） 
++ 其他：ConcurrentLinkedQueue、ConcurrentLikedDeque、ConcurrentSkipListSe
+
+
+
+### 									十、线程上下文切换
+
+​	两个线程A、B。	**A开始执行到t1，CPU记录A线程t1这个状态；然后B开始执行到t2，CPU记录B线程t2这个状态。然后CPU开始重新执行A线程。**这个过程就叫做线程上下文切换。
+
+​	
 
 
 
