@@ -77,7 +77,7 @@
           //升序
   		@Override
           public int compareTo(User o) {
-
+  
               return age.compareTo(o.getAge());
           }
   		//删除
@@ -97,6 +97,12 @@
 - **LinkedList：**
 
   ​		底层是双向链表结构，插入或删除只影响位置的前后元素，所以插入快，查询需要从头开始查，慢
+
+  
+
+**迭代器fail-fast属性**：Iterator fail-fast属性检查当前集合结构里的任何改动。如果发现任何改动，它抛出ConcurrentModificationException
+
+
 
 ### 									二、Set
 
@@ -126,6 +132,17 @@
 
 - **HashMap：**底层数组和链表实现。key的hashcode（）和equals（）
 - **HashTable：**不允许null，线程安全，同步
+- **TreeMap**：有序
+
+HashMap使用Key对象的hashCode()和equals()方法去决定key-value对的索引。
+
+（1）如果o1.equals(o2)，那么o1.hashCode() == o2.hashCode()总是为true的。
+
+（2）如果o1.hashCode() == o2.hashCode()，并不意味着o1.equals(o2)会为true。
+
+
+
+
 
 ---
 
@@ -136,6 +153,8 @@
 # 							三、线程
 
 ---
+
+[**线程面试题**](https://blog.csdn.net/cmyperson/article/details/79610870)
 
 ### 									一、CAS(compare and swap比较并交换)
 
@@ -390,9 +409,145 @@ public class CallableTest{
 
 ​	同步机制是为了同步多个线程对相同资源的并发访问，是为了多个线程之间进行通信的有效方式；而ThreadLocal是隔离多个线程的数据共享，从根本上就不在多个线程之间共享资源（变量）
 
+### 十二、ThreadPool（线程池）用法与优势
+
+​	线程池特点：
+
+- **降低资源消耗**：通过复用线程，减少线程的创建和销毁
+- **提高相应速度**：当任务到达时，不需要等待线程创建就能执行
+- **提高线程的可管理型**：线程池对线程进行统一的分配、调优、监控
+
+```java
+第一种：ExecutorService executorService = Executors.newCachedThreadPool();
+第二种：ExecutorService executorService1 = new ThreadPoolExecutor(2,5,10,
+                                                        TimeUnit.SECONDS,new LinkedBlockingQueue<>(3),
+                                                              Executors.defaultThreadFactory(),
+                                                              new ThreadPoolExecutor.AbortPolicy());
+```
 
 
-https://blog.csdn.net/cmyperson/article/details/79610870
+
+### 十三、synchronized和ReentrantLock的区别
+
+​	synchronized是非公平锁。  ReentrantLock可设置公平、非公平。
+
+​	synchronized是JVM层面的，ReentranLock是JDK层面的。
+
+ReentranLock的实现是一种自旋锁
+
+​	
+
+### 十四、Semaphore、CountDownLatch、CyclicBarrier
+
+##### 1、Semaphore
+
+​	对于Semaphore类而言，就如同一个看门人，限制了可活动的线程数
+
+​	获取资源
+
+- void acquire():从此信号量获取一个许可前线程将一直阻塞。相当于一辆车占了一个车位。           
+
+
+- void acquire(int n):从此信号量获取给定数目许可，在提供这些许可前一直将线程阻塞。比如n=2，就相当于一辆车占了两个车位。
+
+  释放资源
+
+- void release():释放一个许可，将其返回给信号量。就如同车开走返回一个车位。
+
+
+- void release(int n):释放n个许可
+
+##### 2、CountDownLatch
+
+​	 允许一个或多个线程等待其他线程完成操作
+
+假如有这样一个需求，当我们需要解析一个Excel里多个sheet的数据时，可以考虑使用多线程，每个线程解析一个sheet里的数据，等到所有的sheet都解析完之后，程序需要提示解析完成
+
+```java
+CountDownLatch latch = new CountDownLatch(2);
+
+//thread1
+
+new Thread(()->{
+    //dosomething
+    latch.countDown();
+}).start();
+
+
+//thread2
+new Thread(()->{
+    //dosomething
+    latch.countDown();
+}).start();
+
+//otherthing
+latch.await();//await()会阻塞当前线程，直到N变成零
+//后续才会执行其他线程的操作
+```
+
+
+
+##### 3、CyclicBarrier
+
+​	和CountDownLatch相反， 类似于一个栅栏，当所有的线程都到达这个点时，后续的才能进行。
+
+
+
+##### 十五、死锁
+
+##### 	1、死锁定义：
+
+​		多个进行相互等待对方资源，在得到所有资源继续运行之前，都不会释放自己已有的资源，这样造成了循环等待的现象，称为死锁。
+
+##### 	2、产生死锁的四个必要条件：
+
+- **资源互斥、资源不共享**
+
+  一个资源只能被一个线程使用
+
+- **占有和等待/请求并保持**
+
+  已得到资源的线程还能继续请求其他资源
+
+- **资源不可剥夺**
+
+  一个资源被一个线程占有后，除非当前线程释放该资源，否则其他线程是不能获取到该资源
+
+- **环路等待**
+
+  线程A持有锁a，线程B持有锁b， A需要锁b，B需要锁a，但是锁 a和b都被占有，A和B相互等待。
+
+- ##### 3、防止死锁:,,- 破坏四个必要条件,- 线程的需求资源数小于等于总可用资源数,- 判断 系统安全状态 法。其实就是判断线程的需求资源是否大于目前可用资源
+
+
+
+
+
+## 							四、Spring
+
+https://blog.csdn.net/a745233700/article/details/80959716  spring面试
+
+https://cloud.tencent.com/developer/article/1185885   动态代理
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
