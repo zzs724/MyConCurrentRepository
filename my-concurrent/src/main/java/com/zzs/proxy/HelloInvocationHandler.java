@@ -12,7 +12,8 @@ public class HelloInvocationHandler implements InvocationHandler {
         if ("sayHello".equals(method.getName())) {
             System.out.println("--"+ Arrays.toString(args));
         }
-        return method.invoke(hello, args);
+        method.invoke(hello, args);
+        return null;
     }
 
     private Hello hello;
@@ -22,10 +23,10 @@ public class HelloInvocationHandler implements InvocationHandler {
     }
 
     public static void main(String[] args) {
-        Hello hello = (Hello) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
+        Hello hello = (Hello) Proxy.newProxyInstance(HelloInvocationHandler.class.getClassLoader(),
                 new Class<?>[]{Hello.class},
                 new HelloInvocationHandler(new HelloImpl()));
-        System.out.println(hello.sayHello("HelloImpl"));
+        hello.sayHello("HelloImpl");
     }
     public static void main2(String[] args) {
         Hello hello = new HelloImpl();
@@ -33,6 +34,6 @@ public class HelloInvocationHandler implements InvocationHandler {
         Hello proxy = (Hello) Proxy.newProxyInstance(hello.getClass().getClassLoader(),
                 hello.getClass().getInterfaces(),
                 invocationHandler);
-        System.out.println(proxy.sayHello("HelloImpl"));
+        proxy.sayHello("HelloImpl");
     }
 }
