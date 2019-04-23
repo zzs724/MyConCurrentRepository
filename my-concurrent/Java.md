@@ -638,7 +638,7 @@ latch.await();//await()会阻塞当前线程，直到N变成零
 
 ```
 
-### 二、spring默认使用jdk动态代理
+### 二、Spring默认使用jdk动态代理
 
 ​	1.如果目标对象实现了接口，在默认情况下采用jdk的动态代理实现aop
 
@@ -650,17 +650,42 @@ latch.await();//await()会阻塞当前线程，直到N变成零
 >
 > ```xml
 > <aop:aspectj-autoproxy proxy-target-class="true"/>强制使用cglib代理
-> 
-> 
 > ```
+
+**AspectJ：静态代理**
+**AOP：动态代理**
+
+> ### 三、Spring的Bean单例与线程安全问题
 >
-> 
+> ​	一个Bean如果是单例的，且在Bean中有全局变量context（全局变量是每个线程共享的资源，会存在并发问题）。
+>
+> ​	那么在多线程并发的情况下，当A线程进来将context的值设为自己的，这个是线程B也进来将context改成B的，这时候A的context的值也变成B的了。
+>
+> 解决方法：1、**使用ThreadLocal**，这样每个线程都有自己的本地变量副本conetxt。
+>
+> ​		  2、避免全局变量
 
+### 四、Spring开启自动配置
 
+```xml
+ <context:annotation-config/>
+```
 
+### 五、Spring支持的事务管理类型
 
+- **编程式事务管理**：这意味你通过编程的方式管理事务，给你带来极大的灵活性，但是难维护。**代码手动实现 事务操作(提交，回滚)**
+- **声明式事务管理：**这意味着你可以将业务代码和事务管理分离，你只需用注解和XML配置来管理事务。
 
+### 六、BeanFactory和ApplicationContext区别
 
+​	BeanFactory和ApplicationContext是Spring的两大核心接口。都可以作为Spring的容器
+
+1. **ApplicationContext实现了BeanFactory。**
+2. BeanFactory是Spring最底层的接口。包含：各种Bean的定义、读取Bean配置文档、管理Bean的加载、实例化、控制Bean的生命周期、维护Bean之间的依赖关系。
+3. ApplicationContext还实现了：支持国际化、统一的资源文件访问、同时加载多个配置文件、
+4. **BeanFactory采用延迟加载来创建Bean，ApplicationContext是在容器启动时一次性创建所有Bean**，所以ApplicationContext会导致Bean过多时，容器启动慢
+5. BeanFactory和ApplicationContext都支持BeanPostProcessor、BeanFactoryPostProcessor的使用。BeanFactory需要手动注册，而ApplicationContext则是自动注册
+6. BeanFactory通常以编程的方式被创建，ApplicationContext还能以声明的方式创建，如使用ContextLoader
 
 
 
