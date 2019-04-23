@@ -1,4 +1,4 @@
-# 							一、JVM调优
+# 												一、JVM调优
 
 ---
 
@@ -49,7 +49,7 @@
 
 
 
-# 							二、集合
+# 												二、集合
 
 ---
 
@@ -150,7 +150,7 @@ HashMap使用Key对象的hashCode()和equals()方法去决定key-value对的索�
 
 
 
-# 							三、线程
+# 												三、线程
 
 ---
 
@@ -523,7 +523,162 @@ latch.await();//await()会阻塞当前线程，直到N变成零
 
 
 
-## 							四、Spring
+## 												四、Spring
+
+### 一、动态代理、静态代理
+
+​	**动态代理**：在程序运行时运用反射机制动态创建而成。一个代理类可以代理各种类型的委托类，一个对多。
+
+​	**jdk实现java动态代理：**是依靠接口实现的，一旦没有接口，java动态代理就没法实现了
+
+​	**静态代理**：在程序运行前**代理类的.class文件**就已经存在了。代理类必须和委托类实现同一个 接口。使用代理类时，必须创建一个代理类并将委托类传入进去。
+
+​	**静态代理缺点：**一个静态代理类只能服务一个委托类。一对一的。
+
+​	**cglib动态代理**：针对类来实现代理的
+
+```java
+    public interface Person{
+        public String say();
+    }
+    //委托类
+    public class Student implements Person{
+        public String say(){
+            return "student";
+        }
+    }
+
+
+
+--------------------------------------------------------------------------------------
+
+    //静态代理类
+    public class StaticProxy implements Person{
+        private Person person;
+        public StaticProxy(Person p){
+            this.person = p;
+        }
+        public String say(){
+            return person.say();
+        }
+    }
+    //测试类
+    public class Test{
+        public static void main(String[] args){
+            Person proxy = new StaticProxy(new Student());
+            proxy.say();
+        }
+    }
+--------------------------------------------------------------------------------------
+    //java动态代理类
+    public class DynamicInvocationHandler implements InvocationHandler {
+        
+        private Object target;//委托类
+        
+        public Object myNewProxyInstance(Object target){
+            this.target = target;
+            //第一个参数指定产生代理对象的类加载器，需要将其指定为和目标对象同一个类加载器  
+        	//第二个参数要实现和目标对象一样的接口，所以只需要拿到目标对象的实现接口  
+        	//第三个参数表明这些被拦截的方法在被拦截时需要执行哪个InvocationHandler的invoke方法 
+            return Proxy.newProxyInstance(target.getClass().getClassLoader(),target.getClass().getInterfaces(),this);
+        }
+        
+        @Override  
+        public Object invoke(Object proxy, Method method, Object[] args)  
+            throws Throwable {  
+            Object o = null;
+            System.out.println("satrt-->>"); 
+            before();
+            o = method.invoke(target, args)
+            after();
+            System.out.println("end-->>"); 
+            return o;
+            
+        }
+    }
+    //测试类
+    public class Test{
+        public static void main(String[] args){
+            Person proxy = (Person)new DynamicInvocationHandler().myNewProxyInstance(new Student());
+            proxy.say();
+        }
+    }
+----------------------------------------------------------------------------
+    //cglib实现
+    public class CglibProxyDemo implements MethodInterceptor {
+        @Override
+        public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+            System.out.println("执行前.......");
+            Object ob = methodProxy.invokeSuper(o, objects);
+            System.out.println("执行后.......");
+            return ob;
+        }
+    }
+    public class HelloImpl implements Hello{
+        @Override
+        public String sayHello(String string) {
+            System.out.println("sayHello-->"+string);
+            return null;
+        }
+        final public String sayHi(String string) {
+            System.out.println("sayHi-->"+string);
+            return null;
+        }
+    }
+    public class CglibTest {
+        public static void main(String[] args) {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(HelloImpl.class);
+            enhancer.setCallback(new CglibProxyDemo());
+            HelloImpl hello = (HelloImpl) enhancer.create();
+            hello.sayHello("Hello");
+            hello.sayHi("Hi");
+        }
+    }
+
+```
+
+### 二、spring默认使用jdk动态代理
+
+​	1.如果目标对象实现了接口，在默认情况下采用jdk的动态代理实现aop
+
+> ​	2.如果目标对象实现了接口，也可以强制使用cglib生成代理实现aop
+
+> ​	3.如果目标对象没有实现接口，那么必须引入cglib，spring会在jdk的动态代理和cglib代理之间切换
+>
+> **cglib动态代理：被代理目标不是是final修饰的类，因为cglib是基于继承实现的**
+>
+> ```xml
+> <aop:aspectj-autoproxy proxy-target-class="true"/>强制使用cglib代理
+> 
+> 
+> ```
+>
+> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 https://blog.csdn.net/a745233700/article/details/80959716  spring面试
 

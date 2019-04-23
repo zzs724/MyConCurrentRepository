@@ -8,8 +8,8 @@ public class ObjectInvocationHandler implements InvocationHandler{
 
     private Object object;
 
-    public Object bind(Object o) {
-        this.object = o;
+    public Object bind(Object object) {
+        this.object = object;
         return Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(), this);
     }
 
@@ -25,4 +25,5 @@ public class ObjectInvocationHandler implements InvocationHandler{
         Hello hello = (Hello) new ObjectInvocationHandler().bind(new HelloImpl());
         hello.sayHello("Hahahaha");
     }
+
 }
